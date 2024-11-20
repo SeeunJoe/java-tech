@@ -1,12 +1,15 @@
-package ex01.model;
+package ex01.dto;
 
-public class Product {
+
+import ex01.model.Product;
+
+public class ProductListDTO {
     private int id;
-    private String name; // 바지
+    private String name;
 
-    public Product(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public ProductListDTO(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
     }
 
     public int getId() {

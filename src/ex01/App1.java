@@ -1,11 +1,15 @@
-package ex01.model;
+package ex01;
 
 import com.google.gson.Gson;
-import ex01.model.dto.OrderDetailDTO;
-import ex01.model.dto.ProductDTO;
-import ex01.model.dto.ProductDetailDTO;
+import ex01.dto.OrderDetailDTO;
+import ex01.dto.ProductDetailDTO;
+import ex01.dto.ProductListDTO;
+import ex01.model.Order;
+import ex01.model.OrderOption;
+import ex01.model.Product;
+import ex01.model.ProductOption;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +26,7 @@ public class App1 {
         ProductOption op3 = new ProductOption(3, "노랑티", 1000, 10, p2);
         ProductOption op4 = new ProductOption(4, "하얀티", 2000, 10, p2);
 
-      //  List<ProductOption> p1Options = Arrays.asList(op1, op2); // 2번 문제 -> p1,p1Options DTO로 옮기기
+        List<ProductOption> p1Options = Arrays.asList(op1, op2); // 2번 문제 -> p1, p1Options DTO로 옮기기
         List<ProductOption> p2Options = Arrays.asList(op3, op4);
 
         // 3. 구매
@@ -31,8 +35,8 @@ public class App1 {
         OrderOption orOption2 = new OrderOption(2, "빨간바지", 2, 4000, p1, or1);
         OrderOption orOption3 = new OrderOption(3, "하얀티", 5, 10000, p2, or1);
 
-        // 4번 문제의 데이터
-       // List<OrderOption> or1Options = Arrays.asList(orOption1, orOption2, orOption3);
+        // 4번문제 데이터 (이것만 넣고 DTO 만들기)
+        List<OrderOption> or1Options = Arrays.asList(orOption1, orOption2, orOption3);
 
         op1.setQty(op1.getQty() - 2);
         op2.setQty(op2.getQty() - 2);
@@ -40,39 +44,34 @@ public class App1 {
 
         Order or2 = new Order(2);
         OrderOption orOption4 = new OrderOption(4, "노랑티", 7, 7000, p2, or2);
+
+        // 3번문제 데이터 (이것만 넣고 DTO 만들기)
         List<OrderOption> or2Options = Arrays.asList(orOption4);
 
         op3.setQty(op3.getQty() - 7);
 
+        // gson
         Gson gson = new Gson();
 
         // 4. 상품 목록 화면
-        // List<Product> products -> List<ProductListDTO> productListDTO 옮기기
-        List<ProductDTO> productDTOs =  new ArrayList<>();
-        for (Product p : products) {
-            productDTOs.add(new ProductDTO(p));
-        }
-
-        // 출력하기
+        List<ProductListDTO> productDTOs = Arrays.asList(new ProductListDTO(p1), new ProductListDTO(p2));
         String r1 = gson.toJson(productDTOs);
         System.out.println(r1);
 
-
-        // 5. 상품 상세 화면 (p1, p1Options) ->
-        // p1, p1Options -> ProductDetailDTO에 옮겨서 주기
-        List<ProductOption> p1Options = Arrays.asList(op1,op2);
-
-        ProductDetailDTO productDetailDTO = new ProductDetailDTO(p1Options);
-        String r2 = gson.toJson(p1Options);
+        // 5. 상품 상세 화면 (p1)
+        ProductDetailDTO productDetailDTO = new ProductDetailDTO(p1, p1Options);
+        String r2 = gson.toJson(productDetailDTO);
         System.out.println(r2);
 
-        // 6-1. 주문 확인 상세 화면 (or2Options)
-
-        List<OrderOption> or1Options = Arrays.asList(orOption1,orOption2,orOption3);
-
-        // 6-2. 주문 확인 상세 화면 (or1Options)
-        OrderDetailDTO orderDetailDTO = new OrderDetailDTO(or1Options);
-        String r3 = gson.toJson(or1Options);
+        // 6-1. 주문 확인 상세 화면 (or2)
+        OrderDetailDTO order2 = new OrderDetailDTO(or2Options);
+        String r3 = gson.toJson(order2);
         System.out.println(r3);
+
+        // 6-2. 주문 확인 상세 화면 (or1)
+//        OrderDetailV2DTO order1 = new OrderDetailV2DTO(or1Options);
+//        String r4 = gson.toJson(order1);
+//        System.out.println(r4);
+
     }
 }
