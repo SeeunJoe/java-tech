@@ -1,6 +1,5 @@
 package ex01.dto;
 
-import ex01.model.Product;
 import lombok.Data;
 import ex01.model.ProductOption;
 
@@ -15,7 +14,7 @@ public class ProductDetailDTO {
 
     private List<ProductOptionDTO> options = new ArrayList<>();
 
-    public ProductDetailDTO(Product p1, List<ProductOption> options) {
+    public ProductDetailDTO(List<ProductOption> options) {
         this.productId = options.get(0).getProduct().getId();
         this.productName = options.get(0).getProduct().getName();
 

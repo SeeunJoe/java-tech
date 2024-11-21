@@ -1,124 +1,70 @@
 package ex01.dto;
 
-
+import lombok.Data;
 import ex01.model.OrderOption;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+@Data
 public class OrderDetailDTO {
     private int orderId;
-    private List<ProductDTO> products = new ArrayList<>();
+    private List<OrderProductDTO> products = new ArrayList<>();
     private int sumPrice;
 
-    public OrderDetailDTO(List<OrderOption> orderOptions) {
-        this.orderId = orderOptions.get(0).getId();
+    public OrderDetailDTO(List<OrderOption> options) {
+        // 1. orderId
+        this.orderId = options.get(0).getOrder().getId();
 
-        // 중복이 제거된 상품 ids + 전체금액 계산
-        Set<Integer> productIds = new HashSet<>();
-        for (OrderOption orderOption : orderOptions) {
-            productIds.add(orderOption.getProduct().getId());
-            this.sumPrice += orderOption.getTotalPrice();
+        // 2. sumPrice
+        for (OrderOption option : options) {
+            this.sumPrice += option.getTotalPrice();
         }
 
-        // 상품별 주문한 상품옵션 만들기
-        for (Integer productId : productIds) {
+        // 3. products
+        // 3.1 주문옵션들 productId [1,1,2] -> [1,2] 돈봉투 2개 만들기
+        Set<Integer> ids = new HashSet<>(); // [1,2]
+        for (OrderOption option : options) {
+            ids.add(option.getProduct().getId());
+        }
 
-            List<OrderOption> selectedOptions = new ArrayList<>();
-
-            for (OrderOption orderOption : orderOptions) {
-                if (productId == orderOption.getProduct().getId()) {
-                    selectedOptions.add(orderOption);
-                }
+        // 3.2 중복된 상품의 크기만큼 반복하면서 주문 옵션 추가하기
+        for (Integer id : ids) {
+            List<OrderOption> temp = new ArrayList<>();
+            for (OrderOption option : options) {
+                if(id == option.getProduct().getId()) temp.add(option);
             }
-
-            ProductDTO productDTO = new ProductDTO(productId, selectedOptions);
-            this.products.add(productDTO);
+            OrderProductDTO product = new OrderProductDTO(temp);
+            products.add(product);
         }
+
     }
 
-    class ProductDTO {
+    @Data
+    class OrderProductDTO { // 돈봉투
         private int productId;
-        private List<OrderOptionDTO> orderOptions = new ArrayList<>();
+        private List<OrderOptionDTO> options = new ArrayList<>();
 
-        public ProductDTO(int productId, List<OrderOption> orderOptions) {
-            this.productId = productId;
+        public OrderProductDTO(List<OrderOption> options) {
+            this.productId = options.get(0).getProduct().getId();
 
-            for (OrderOption orderOption : orderOptions) {
-                this.orderOptions.add(new OrderOptionDTO(orderOption));
+            for (OrderOption option : options) {
+                this.options.add(new OrderOptionDTO(option));
             }
         }
 
-        class OrderOptionDTO {
-            private int orderOptionId;
-            private String orderOptionName;
-            private int orderQty;
-            private int orderTotalPrice;
+        @Data
+        class OrderOptionDTO{
+            private int id;
+            private String optionName;
+            private int qty;
+            private int totalPrice;
 
-            public OrderOptionDTO(OrderOption orderOption) {
-                this.orderOptionId = orderOption.getId();
-                this.orderOptionName = orderOption.getOptionName();
-                this.orderQty = orderOption.getQty();
-                this.orderTotalPrice = orderOption.getTotalPrice();
-            }
-
-            public int getOrderOptionId() {
-                return orderOptionId;
-            }
-
-            public void setOrderOptionId(int orderOptionId) {
-                this.orderOptionId = orderOptionId;
-            }
-
-            public String getOrderOptionName() {
-                return orderOptionName;
-            }
-
-            public void setOrderOptionName(String orderOptionName) {
-                this.orderOptionName = orderOptionName;
-            }
-
-            public int getOrderQty() {
-                return orderQty;
-            }
-
-            public void setOrderQty(int orderQty) {
-                this.orderQty = orderQty;
-            }
-
-            public int getOrderTotalPrice() {
-                return orderTotalPrice;
-            }
-
-            public void setOrderTotalPrice(int orderTotalPrice) {
-                this.orderTotalPrice = orderTotalPrice;
+            public OrderOptionDTO(OrderOption option) {
+                this.id = option.getId();
+                this.optionName = option.getOptionName();
+                this.qty = option.getQty();
+                this.totalPrice = option.getTotalPrice();
             }
         }
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public List<ProductDTO> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<ProductDTO> products) {
-        this.products = products;
-    }
-
-    public int getSumPrice() {
-        return sumPrice;
-    }
-
-    public void setSumPrice(int sumPrice) {
-        this.sumPrice = sumPrice;
     }
 }

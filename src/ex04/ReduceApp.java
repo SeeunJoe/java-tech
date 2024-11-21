@@ -26,8 +26,13 @@ public class ReduceApp {
 
         System.out.println(sum2);*/
 
-        int orgin = 315000;
-        List<Integer> list = Arrays.asList(1,2,3,4,5,6,7,8,9);
+        int origin = 31500;
+        List<Integer> list = Arrays.asList(27000, 32000, 40000, 10000, 40000, 20000, 28000);
+
+        int sum = list.stream()
+                .map(integer -> integer - 2000)
+                .reduce(origin, (x, y) -> x + y);
+        System.out.println("니가 들고 있는 돈 : "+sum);
 
     }
 }
